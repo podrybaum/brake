@@ -27,7 +27,7 @@ public class PasswordPromptPage {
    public static boolean exists = false;
    public static Timer passwordTimer = new Timer(300000, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-         Settings.locked = true;
+         Settings.locked = false;
       }
    });
 

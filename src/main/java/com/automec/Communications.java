@@ -41,15 +41,16 @@ public class Communications {
    private static boolean skipped = false;
    // $FF: synthetic field
    private static int[] $SWITCH_TABLE$com$automec$objects$enums$AxisType;
-
+   
    public static void sendCommand(int command, int priority) {
       int[] tmp = new int[0];
+      Settings.log.info(String.format("Communications.sendCommand sending command %1$s, tmp %2$s, priority %3$s", String.valueOf(command), tmp.toString(), String.valueOf(priority)));
       sendCommand(command, tmp, priority);
    }
 
    static void sendCommand(int command, int[] parameters, int priority) {
       boolean correct = false;
-      ArrayList<Integer> msgData = new ArrayList();
+      ArrayList<Integer> msgData = new ArrayList<Integer>();
       int temp;
       switch(command) {
       case 15:
@@ -273,6 +274,8 @@ public class Communications {
          buffer.set((Integer)msgData.get(0) - 2, (temp & '\uff00') >>> 8);
          buffer.set((Integer)msgData.get(0) - 1, temp & 255);
          new QueuedCommand(buffer, priority);
+         Settings.log.info(String.format("Communications.sendCommand new QueuedCommand buffer=%1$s, priority=%2$s", buffer.toString(), String.valueOf(priority)));
+
       } else {
          Settings.log.warning("Somting went wong, prolly perameters");
       }
@@ -312,7 +315,6 @@ public class Communications {
             String i2c = words[0];
             bus = new I2CBus("/dev/" + i2c);
             bus.selectSlave(85);
-            ack = (new I2CBuffer(1)).set(0, 6);
             Listener.sendStatus = new UnQueuedCommand((new I2CBuffer(4)).set(0, 4).set(1, 83).set(2, 255).set(3, 169), 4);
 
             try {
@@ -432,14 +434,7 @@ public class Communications {
          Settings.MACREV = statusResponse.get(40) + "." + statusResponse.get(41);
          Settings.errorByte1 = (byte)statusResponse.get(42);
          Settings.seteStop(Settings.errorByte1 & 2);
-         Settings.setMacPowerCycled(Settings.errorByte1 & 64);
-         if ((Settings.errorByte1 & 64) == 64) {
-            Popups.powerCycled();
-            Settings.log.warning("mac power cycle error");
-         } else {
-            macPower = 0;
-         }
-
+        
          if ((Settings.errorByte1 & 2) == 2) {
             ++eStopCount;
             if (eStopCount > 2) {
@@ -594,7 +589,7 @@ public class Communications {
    }
 
    public static void setEncoderValue(Axis axis, int encoderValue) {
-      ArrayList<Integer> tmp = new ArrayList();
+      ArrayList<Integer> tmp = new ArrayList<Integer>();
       int encoder = -1;
       switch($SWITCH_TABLE$com$automec$objects$enums$AxisType()[axis.getAxisType().ordinal()]) {
       case 1:
@@ -728,8 +723,7 @@ public class Communications {
 
    public static void calibrateXAxis() {
       Axis axis = (Axis)Settings.axes.get(0);
-      ArrayList<Integer> tmp = new ArrayList();
-      int stop = 0;
+      ArrayList<Integer> tmp = new ArrayList<Integer>();
       int pos = (int)((axis.getAxisLength() - 0.1D) * 0.25D * axis.getEncoderCountPerInch()) + (int)(0.1D * axis.getEncoderCountPerInch());
       int slow = pos - (int)(axis.getSlowDistance() * axis.getEncoderCountPerInch());
       tmp.add((slow & -16777216) >>> 24);
@@ -804,15 +798,12 @@ public class Communications {
          Settings.rOdometer += Math.abs(currentPosition - targetPosition);
       }
 
+      ArrayList<Integer> tmp = new ArrayList<Integer>();
 
-      int speed = 1;
-      ArrayList<Integer> tmp = new ArrayList();
-      byte command;
-      byte outputDeviceCode;
-      byte encoder;
+      int outputDeviceCode;
+      int encoder;
       if (axis.getAxisType() == AxisType.BACKGAUGE) {
          encoder = 7;
-         command = 54;
          if (currentPosition - position > 0.0D) {
             outputDeviceCode = 2;
          } else {
@@ -825,7 +816,6 @@ public class Communications {
          }
 
          encoder = 6;
-         command = 54;
          if (currentPosition - position > 0.0D) {
             outputDeviceCode = 0;
          } else {
@@ -853,9 +843,9 @@ public class Communications {
          stopPosition = 0;
       }
 
-      tmp.add(Integer.valueOf(outputDeviceCode));
-      tmp.add(Integer.valueOf(speed));
-      tmp.add(Integer.valueOf(encoder));
+      tmp.add(outputDeviceCode);
+      tmp.add(1); // this value is speed
+      tmp.add(encoder);
       tmp.add((slowPosition & -16777216) >>> 24);
       tmp.add((slowPosition & 16711680) >>> 16);
       tmp.add((slowPosition & '\uff00') >>> 8);
@@ -869,8 +859,8 @@ public class Communications {
       for(int i = 0; i < tmp.size(); ++i) {
          ret[i] = (Integer)tmp.get(i);
       }
-
-      sendCommand(command, ret, 1);
+      
+      sendCommand(54, ret, 1);
    }
 
    public static void driveToPositionRaw(Axis axis, double position) {
@@ -890,15 +880,11 @@ public class Communications {
          Settings.rOdometer += Math.abs(currentPosition - targetPosition);
       }
 
-
-      int speed = 1;
-      ArrayList<Integer> tmp = new ArrayList();
-      byte command;
-      byte outputDeviceCode;
-      byte encoder;
+      ArrayList<Integer> tmp = new ArrayList<Integer>();
+      int outputDeviceCode;
+      int encoder;
       if (axis.getAxisType() == AxisType.BACKGAUGE) {
          encoder = 7;
-         command = 54;
          if (currentPosition - position > 0.0D) {
             outputDeviceCode = 2;
          } else {
@@ -911,7 +897,6 @@ public class Communications {
          }
 
          encoder = 6;
-         command = 54;
          if (currentPosition - position > 0.0D) {
             outputDeviceCode = 0;
          } else {
@@ -930,9 +915,9 @@ public class Communications {
          stopPosition = 0;
       }
 
-      tmp.add(Integer.valueOf(outputDeviceCode));
-      tmp.add(Integer.valueOf(speed));
-      tmp.add(Integer.valueOf(encoder));
+      tmp.add(outputDeviceCode);
+      tmp.add(1); // this value is speed
+      tmp.add(encoder);
       tmp.add((slowPosition & -16777216) >>> 24);
       tmp.add((slowPosition & 16711680) >>> 16);
       tmp.add((slowPosition & '\uff00') >>> 8);
@@ -946,12 +931,11 @@ public class Communications {
       for(int i = 0; i < tmp.size(); ++i) {
          ret[i] = (Integer)tmp.get(i);
       }
-
-      sendCommand(command, ret, 1);
+      sendCommand(54, ret, 1);
    }
 
    public static void xyrCombinedCommand(double xPosition, double rPosition, double top, double slow, double metal, double aw, double bottom) {
-      ArrayList<Integer> tmp = new ArrayList();
+      ArrayList<Integer> tmp = new ArrayList<Integer>();
       double xTarget = ((Axis)Settings.axes.get(0)).getAxisLength() - xPosition;
       double rTarget = ((Axis)Settings.axes.get(2)).getAxisLength() - rPosition;
       boolean xDeadzone = false;
@@ -1148,7 +1132,7 @@ public class Communications {
    }
 
    public void setTopReference(double pos) {
-      ArrayList<Integer> tmp = new ArrayList();
+      ArrayList<Integer> tmp = new ArrayList<Integer>();
       int yPos = (int)(pos * ((Axis)Settings.axes.get(1)).getEncoderCountPerInch());
       tmp.add((yPos & -16777216) >>> 24);
       tmp.add((yPos & 16711680) >>> 16);
@@ -1159,7 +1143,6 @@ public class Communications {
       for(int i = 0; i < tmp.size(); ++i) {
          ret[i] = (Integer)tmp.get(i);
       }
-
       sendCommand(97, ret, 1);
    }
 

@@ -1,0 +1,81 @@
+The I2C protocol is very minimal.  A "message" contains a length, a command number, an optional list of parameters, an integer priority value, and finally, a 2 byte checksum.
+
+The arduino's I2C address is 85.  Right after assigning the arduino as the i2c slave, a message containing (4, 83, 255, 169) assigned to the Listener object's sendStatus attribute.
+This would presumably be a 4 byte message, command 83, no parameters, priority 255 with a checksum value of 0xA9.
+This differs slightly from the sendStatus method of the Communications class, which submits command 83 with a priority of 2.
+
+When updateStatus is called, the message is validated by checking if either the byte at index 40 is not 2 OR the byte at index 41 is < 32.  If either condition is true, an exception is raised, citing "bad MAC version".
+The Arduino transmits the version number of its firmware in these two bytes.  (Ours has 2.35 written on it in marker, which would satisfy this check)
+
+The byte at index 42 is an error byte:   
+	The 1st bit will be set if the R axis has been unplugged.
+    The 2nd bit will be set if the e-stop has been engaged.
+    The 3rd bit will be set along with the 6th bit of errorByte2 in the case of an x axis motor stall.
+    The 4th bit will be set along with the 5th bit of errorByte2 in the case of an r axis motor stall.
+    The 5th bit will be set (something to do with x movement, if set more than 3 cycles, Settings.sxmove is flipped)
+    The 6th bit will be set (same as above but for r axis)
+    The 7th bit will be set if the Arduino has been power cycled.
+ 
+ The byte at index 43 is an error byte:
+ 	The 5th bit will be set along with the 4th bit of errorByte1 in the case of an r axis motor stall.
+ 	The 6th bit will be set along with the 3rd bit of errorByte1 in the case of an x axis motor stall.
+ 	The 7th bit will be set if the X axis has been unplugged.
+ 	The 8th bit will be set if the Y axis has been unplugged.
+ 
+In most cases, an error bit must be set for 3 consecutive cycles before the software reacts to it, presumably to avoid reacting to an erroneous packet.
+
+Apart from the commands, there are integer numbers associated with various parameters such as "outputDeviceCode" and "encoder".
+
+
+ack - single byte message containing the value 6
+
+outputDeviceCode
+--------------------------------------------------------
+0	ram	If current ram position is positive
+1	ram	If current ram position is negative
+2	backgauge 	If current backgauge position is positive
+3	backgauge 	If current backgauge position is negative
+
+
+encoder
+--------------------------------------------------------
+7	backgauge  - in driveToPosition
+6	ram		-	in driveToPosition
+12  backguage	- in setEncoderValue
+13  ram		- in setEncoderValue
+14  other	- in setEncoderValue
+
+
+commands - All position values are in encoder counts
+--------------------------------------------------------
+command	| function				| parameters
+--------------------------------------------------------
+15		| unknown				| shows up in sendCommand method, not called anwyhere, no parameters
+53		| unknown				| c
+54		| move axis 			| outputDeviceCode, speed, encoder, slowPosition, stopPosition
+55		| move multiple axes	| same as 54, with a list of params for each axis being moved
+83		| send status			| none
+87		| reset arduino			| none
+88		| calibrate X axis		| target position, slowPosition
+89		| calibrate R axis		| target position, slowPosition, stopPosition
+90
+96
+97		| set top reference		| position
+98
+103		| set encoder value 	| encoder, value
+165
+167
+195		| set Y control param	| top, slowPosition, metalPosition, awPosition, bottom
+255
+
+	
+	
+Notes:
+1. I found this logic in the function that handles moving the axes.  I suspect this indicates that outputDeviceCode 1-4 represent the low-speed/high-speed mode for the axes, rather than direction.  However, the values are initialized based on the axis' position relative to zero, rather than the slow position, which doesn't make a lot of sense.   Needs more investigation:
+
+	if slow position < current position and output device is 2, change to output device 3
+	if slow position < current position and output device is 0, change to output device 1
+	
+2. Note that the amount of distance to move is not one of the parameters passed to the movement commands.  The function merely increments the odometer attribute of the axis object by the absolute value of the distance that needs to be moved.  I'm not yet sure how this attribute value plays into the actual execution of moving the axes.
+
+

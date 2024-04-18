@@ -37,6 +37,7 @@ public class QueuedCommand {
 
             while(true) {
                if (i >= this.buffer.length) {
+            	  Settings.log.info(String.format("QueuedCommand.runCommand sending %1$s over I2C", t));
                   Settings.log.finer(t);
                   break;
                }
@@ -45,7 +46,7 @@ public class QueuedCommand {
                ++i;
             }
          }
-
+         
          Communications.bus.write(this.buffer);
          Thread.sleep(1L);
          if (this.buffer.get(1) == 83) {

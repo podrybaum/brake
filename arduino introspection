@@ -1,0 +1,8 @@
+the formula for translating arduino reported position data (which is given in encoder counts):
+	- position / encoderCountPerInch + this.axisLength;
+	(invert the position value, divide by encoder counts per inch and add the length of the axis)
+	
+x axis calibration uses the following formula for the target to calibrate to:
+	25% of (axis length (24") - 0.1") + 0.1"
+	no idea why the strange offsets are needed.
+	

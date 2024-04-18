@@ -88,8 +88,8 @@ public class Settings {
       extAdvPolarity = ExtAdvPolarity.NC;
       autoAdvancePosition = AdvancePosition.TOS;
       units = Units.INCHES;
-      locked = true;
-      connectedUSB = new ArrayList();
+      locked = false;
+      connectedUSB = new ArrayList<USB>();
       selectedUSB = null;
       lastUSB = null;
       xStop = 0;
@@ -104,7 +104,7 @@ public class Settings {
       floatingCalibration = false;
       demoMode = false;
       displayCounts = false;
-      positionRecording = new ArrayDeque();
+      positionRecording = new ArrayDeque<PositionStamp>();
       maxRecordingLength = 5000;
       pauseRecording = false;
    }

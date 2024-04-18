@@ -3,11 +3,11 @@ package com.automec;
 import java.util.ArrayList;
 
 public class Recording {
-   private ArrayList<Long> time = new ArrayList();
-   private ArrayList<Integer> position = new ArrayList();
-   private ArrayList<Integer> expectedPos = new ArrayList();
-   private ArrayList<Long> startTime = new ArrayList();
-   private ArrayList<Long> stopTime = new ArrayList();
+   private ArrayList<Long> time = new ArrayList<Long>();
+   private ArrayList<Integer> position = new ArrayList<Integer>();
+   private ArrayList<Integer> expectedPos = new ArrayList<Integer>();
+   private ArrayList<Long> startTime = new ArrayList<Long>();
+   private ArrayList<Long> stopTime = new ArrayList<Long>();
 
    public ArrayList<Long> getTimes() {
       return this.time;
