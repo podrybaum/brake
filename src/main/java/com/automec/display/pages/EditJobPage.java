@@ -84,7 +84,7 @@ public class EditJobPage extends JFrame {
       this.mc = new MathContext(10, RoundingMode.HALF_EVEN);
       ArrayList<Bend> bends = new ArrayList();
       ArrayList<Axis> axes = Settings.axes;
-      Job job = new Job("", Mode.DEPTH, 0.0D, Settings.units, bends, axes);
+      Job job = new Job("", Settings.defaultMode, Settings.axes.get(1).getSlowDistance(), Settings.units, bends, axes);
       this.oldBends = "";
       this.job = job;
       existingPage = this;
