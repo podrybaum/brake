@@ -951,12 +951,32 @@ public class RunJobPage extends JFrame {
       if (angle < 2.0D) {
          rangle = 2.0D;
       }
+      
+      //bend depth is calculated using the complementary angle
+      rangle = 180.0D - rangle;
+      
+      //b = (Die width/2)
+      //Dp = b / Tan (Bent-to angle/2)
 
-      BigDecimal width = new BigDecimal(String.format("%.3f", job.getDie().getDieWidth()));
-      BigDecimal thick = new BigDecimal(String.format("%.3f", job.getThickness()));
-      BigDecimal radius = new BigDecimal(String.format("%.3f", job.getDie().getDieRadius()));
+      //BigDecimal width = new BigDecimal(String.format("%.3f", job.getDie().getDieWidth()));
+      //BigDecimal thick = new BigDecimal(String.format("%.3f", job.getThickness()));
+      //BigDecimal radius = new BigDecimal(String.format("%.3f", job.getPunch().getPunchRadius()));
+      //BigDecimal depth;
+      double b = job.getDie().getDieWidth()/2;
 
-      BigDecimal depth;
+      //[Rp / (Mt × 0.9]/2
+      double radius = job.getPunch().getPunchRadius();
+      double thickness = job.getThickness();
+      double springback = radius / (thickness*0.9)/2;
+      //calculate bend-to angle
+      rangle = rangle + springback;
+      //theoretical bend depth accounting for springback
+      double depth = b/Math.tan(rangle/2);
+      
+      return depth;
+      
+      
+      /*
       try {
          depth = (new BigDecimal(width.doubleValue() / (2.0D * Math.tan(Math.toRadians(rangle / 2.0D))) - (radius.doubleValue() + thick.doubleValue()) * (1.0D / Math.sin(Math.toRadians(rangle) / 2.0D) - 1.0D))).setScale(5, 6);
       } catch (Exception var9) {
@@ -965,6 +985,7 @@ public class RunJobPage extends JFrame {
       }
 
       return depth.doubleValue();
+      */
    }
 
    private static void calculateAngleArray() {
