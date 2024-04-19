@@ -142,7 +142,7 @@ public class Settings {
          LocalDate cal = LocalDate.now();
          Handler pHandler = new FileHandler(SystemCommands.getWorkingDirectory() + File.separator + "CNC600" + File.separator + "debug" + File.separator + cal.format(DateTimeFormatter.ofPattern("yyyy_MM_dd")) + "_logP.log", 100000000, 2, true);
          Handler tHandler = new FileHandler(System.getProperty("java.io.tmpdir") + File.separator + "CNC600" + File.separator + "debug" + File.separator + cal.format(DateTimeFormatter.ofPattern("yyyy_MM_dd")) + "_logT.log", 100000000, 2, true);
-         pHandler.setLevel(Level.CONFIG);
+         pHandler.setLevel(Level.ALL);
          tHandler.setLevel(Level.ALL);
          pHandler.setFormatter(format);
          tHandler.setFormatter(format);
