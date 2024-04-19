@@ -82,7 +82,7 @@ public class EditJobPage extends JFrame {
 
    public EditJobPage() {
       this.mc = new MathContext(10, RoundingMode.HALF_EVEN);
-      ArrayList<Bend> bends = new ArrayList();
+      ArrayList<Bend> bends = new ArrayList<Bend>();
       ArrayList<Axis> axes = Settings.axes;
       Job job = new Job("", Settings.defaultMode, Settings.axes.get(1).getSlowDistance(), Settings.units, bends, axes);
       this.oldBends = "";
@@ -295,17 +295,17 @@ public class EditJobPage extends JFrame {
                Settings.log.finest("edit job page disposed");
                new EditJobPage(EditJobPage.this.job);
             } else if (modeLabel.getText().equals("Angle Mode")) {
-               EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.ANGLE, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList(), Settings.axes);
+               EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.ANGLE, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
                EditJobPage.this.dispose();
                Settings.log.finest("edit job page disposed");
                new EditJobPage(EditJobPage.this.job);
             } else if (modeLabel.getText().equals("Depth Mode (FC)")) {
-               EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTHFC, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList(), Settings.axes);
+               EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTHFC, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
                EditJobPage.this.dispose();
                Settings.log.finest("edit job page disposed");
                new EditJobPage(EditJobPage.this.job);
             } else {
-               EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTH, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList(), Settings.axes);
+               EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTH, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
                EditJobPage.this.dispose();
                Settings.log.finest("edit job page disposed");
                new EditJobPage(EditJobPage.this.job);
@@ -328,17 +328,17 @@ public class EditJobPage extends JFrame {
                  Settings.log.finest("edit job page disposed");
                  new EditJobPage(EditJobPage.this.job);
               } else if (modeLabel.getText().equals("Angle Mode")) {
-                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.ANGLE, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList(), Settings.axes);
+                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.ANGLE, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
                  EditJobPage.this.dispose();
                  Settings.log.finest("edit job page disposed");
                  new EditJobPage(EditJobPage.this.job);
               } else if (modeLabel.getText().equals("Depth Mode (FC)")) {
-                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTHFC, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList(), Settings.axes);
+                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTHFC, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
                  EditJobPage.this.dispose();
                  Settings.log.finest("edit job page disposed");
                  new EditJobPage(EditJobPage.this.job);
               } else {
-                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTH, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList(), Settings.axes);
+                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTH, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
                  EditJobPage.this.dispose();
                  Settings.log.finest("edit job page disposed");
                  new EditJobPage(EditJobPage.this.job);
@@ -562,8 +562,8 @@ public class EditJobPage extends JFrame {
 
          }
       });
-      ArrayList<Integer> test = new ArrayList();
-      widths = new ArrayList();
+      ArrayList<Integer> test = new ArrayList<Integer>();
+      widths = new ArrayList<Integer>();
       JLabel bendNumberLabel = new JLabel("<html>BEND<br/>NUMBER</html>");
       bendNumberLabel.setFont(DisplayComponents.editJobPageText);
       bendNumberLabel.setHorizontalAlignment(0);
@@ -876,10 +876,10 @@ public class EditJobPage extends JFrame {
          public void actionPerformed(ActionEvent e) {
             if (EditJobPage.this.job != null) {
                if (EditJobPage.this.job.getBends().size() > 0) {
-                  ArrayList<AxisValues> v = new ArrayList();
-                  ArrayList<String> x = new ArrayList();
-                  ArrayList<String> y = new ArrayList();
-                  ArrayList<String> r = new ArrayList();
+                  ArrayList<AxisValues> v = new ArrayList<AxisValues>();
+                  ArrayList<String> x = new ArrayList<String>();
+                  ArrayList<String> y = new ArrayList<String>();
+                  ArrayList<String> r = new ArrayList<String>();
                   x.add("");
                   x.add("  ");
                   x.add("");
@@ -1189,7 +1189,7 @@ public class EditJobPage extends JFrame {
    }
 
    public void createTestJob() {
-      ArrayList<Bend> bends = new ArrayList();
+      ArrayList<Bend> bends = new ArrayList<Bend>();
       ArrayList<Axis> axes = Settings.axes;
       this.job = new Job("Test", Mode.DEPTH, 0.0D, Settings.units, bends, axes);
    }
