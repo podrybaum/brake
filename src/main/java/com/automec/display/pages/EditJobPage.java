@@ -316,35 +316,7 @@ public class EditJobPage extends JFrame {
       this.jobNameTextField.addMouseListener(DisplayComponents.KeyboardPopup());
       this.jobNameTextField.addFocusListener(new FocusListener() {
          public void focusLost(FocusEvent e) {
-             if (SystemCommands.jobExists(EditJobPage.this.jobNameTextField.getText())) {
-                 Settings.log.fine("job: " + EditJobPage.this.jobNameTextField.getText() + " exists already, opening job");
-                 EditJobPage.this.dispose();
-                 Settings.log.finest("edit job page disposed");
-                 new EditJobPage(SystemCommands.getJob(EditJobPage.this.jobNameTextField.getText()));
-              } else if (!EditJobPage.this.job.getName().equals("") && !EditJobPage.this.jobNameTextField.getText().equals(EditJobPage.this.job.getName())) {
-                 Settings.log.info("Copying job from " + EditJobPage.this.job.getName() + " to " + EditJobPage.this.jobNameTextField.getText());
-                 EditJobPage.this.job = EditJobPage.this.job.copyJob(EditJobPage.this.jobNameTextField.getText());
-                 EditJobPage.this.dispose();
-                 Settings.log.finest("edit job page disposed");
-                 new EditJobPage(EditJobPage.this.job);
-              } else if (modeLabel.getText().equals("Angle Mode")) {
-                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.ANGLE, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
-                 EditJobPage.this.dispose();
-                 Settings.log.finest("edit job page disposed");
-                 new EditJobPage(EditJobPage.this.job);
-              } else if (modeLabel.getText().equals("Depth Mode (FC)")) {
-                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTHFC, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
-                 EditJobPage.this.dispose();
-                 Settings.log.finest("edit job page disposed");
-                 new EditJobPage(EditJobPage.this.job);
-              } else {
-                 EditJobPage.this.job = new Job(EditJobPage.this.jobNameTextField.getText(), Mode.DEPTH, ((Axis)Settings.axes.get(1)).getSlowDistance(), Settings.units, new ArrayList<Bend>(), Settings.axes);
-                 EditJobPage.this.dispose();
-                 Settings.log.finest("edit job page disposed");
-                 new EditJobPage(EditJobPage.this.job);
-              }
          }
-
          public void focusGained(FocusEvent e) {
             EditJobPage.this.jobNameTextField.getCaret().setVisible(true);
          }
